@@ -1,0 +1,6 @@
+@SCP_HostAddress = http://localhost:5227
+
+GET {{SCP_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
