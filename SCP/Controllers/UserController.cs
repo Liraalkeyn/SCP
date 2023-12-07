@@ -52,7 +52,7 @@ namespace SCP.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.users.Update(user);
 
             try
             {

@@ -13,5 +13,5 @@ public partial class article
 
     public string header { get; set; } = null!;
 
-    public byte[] image { get; set; } = null!;
+    public string? imageUrl { get; set; }
 }
