@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SCP.Context;
@@ -12,9 +13,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 //Инициализация
 var config = builder.Configuration;
+
+builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<MyDbContext>(); //добавление с помощью Entity Framework Identity юзера, он берёт инфу для логина из БД
+
 //Добавление строки подключения из AppSettings.json
 builder.Services.AddDbContext<MyDbContext>(
     options => options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
@@ -63,6 +68,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
-
+app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
 app.Run();
 

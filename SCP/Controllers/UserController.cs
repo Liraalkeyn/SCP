@@ -125,7 +125,7 @@ namespace SCP.Controllers
             return _context.users.Any(e => e.userID == id);
         }
 
-        
+       /* 
         private readonly JWTSettings _options; //использование настроек JWT
 
         public UserController(IOptions<JWTSettings> optAccess) //
@@ -138,8 +138,8 @@ namespace SCP.Controllers
         [HttpGet("GenerateToken")]
         public string GenerateToken(string login, string password)
         {
-            List<Claim> claims = new List<Claim>(); /*Лист это тот, кто получает токен. В лист мы закидываем роль, 
-        имя и тд, то есть список параматров для одного человека */
+            List<Claim> claims = new List<Claim>(); Лист это тот, кто получает токен. В лист мы закидываем роль, 
+        имя и тд, то есть список параматров для одного человека 
             claims.Add(new Claim(ClaimTypes.Name, login));
             claims.Add(new Claim(ClaimTypes.Role, password)); //мы обозвали пароль ролью чтобы работало?? ⚆_⚆
 
@@ -155,6 +155,6 @@ namespace SCP.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(jwt); //Возвращение jwt токена.
-        }
+        } */
     }
 }
