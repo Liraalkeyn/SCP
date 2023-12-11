@@ -18,11 +18,17 @@ builder.Services.AddControllers();
 //Инициализация
 var config = builder.Configuration;
 
-builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<MyDbContext>(); //добавление с помощью Entity Framework Identity юзера, он берёт инфу для логина из БД
+builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<LoginDBContext>(); //добавление с помощью Entity Framework Identity юзера, он берёт инфу для логина из БД
+//Добавление строки подключения из AppSettings.json
+builder.Services.AddDbContext<LoginDBContext>(
+    options => options.UseNpgsql(config.GetConnectionString("LoginConnection")));
+
+
 
 //Добавление строки подключения из AppSettings.json
 builder.Services.AddDbContext<MyDbContext>(
     options => options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
+
 
 //Добавление в конфигуры наш JWTSettings, короче токен
 builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
