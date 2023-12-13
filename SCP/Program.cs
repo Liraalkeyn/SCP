@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using SCP.Context;
 using SCP.Security;
+using Swashbuckle.AspNetCore.Filters;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +14,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer(); 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header, //Место хранения токена в хедере
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    
+    options.OperationFilter<SecurityRequirementsOperationFilter>(); //Добавление блока сваггера для блокировки, короче тут всё понятно
+});
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 //Инициализация
@@ -31,7 +43,7 @@ builder.Services.AddDbContext<MyDbContext>(
 
 
 //Добавление в конфигуры наш JWTSettings, короче токен
-builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
+/* builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
 
 var secretKey = builder.Configuration.GetSection("JWTSettings:SecretKey").Value;
 var issuer = builder.Configuration.GetSection("JWTSettings:Issuer").Value;
@@ -57,7 +69,7 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = signingKey,
             ValidateIssuerSigningKey = true //Настройка параметров валидации токенов
         };
-    });
+    }); */
 
 var app = builder.Build();
 
@@ -69,11 +81,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapIdentityApi<IdentityUser>();
+
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
-app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
+// app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
 app.Run();
 
