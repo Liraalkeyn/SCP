@@ -26,6 +26,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
+
+builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+
 //Инициализация
 var config = builder.Configuration;
 
@@ -88,6 +91,24 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
+app.UseMvc(routes =>
+{
+    routes.MapRoute("default", "{controller}/{action}");
+
+    routes.MapRoute("spa", "{*url}", defaults: new { controller = "Home", action = "spa" }); //!
+});
+
+
 // app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
 app.Run();
 
