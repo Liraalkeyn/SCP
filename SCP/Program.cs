@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SCP.Context;
-using SCP.Security;
 using Swashbuckle.AspNetCore.Filters;
 
 
